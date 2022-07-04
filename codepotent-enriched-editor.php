@@ -143,7 +143,6 @@ class Enriched_Editor {
 
 		add_action('upgrader_process_complete', [$this, 'upgrade_completed'], 10, 2);
 
-		require_once(plugin_dir_path(__FILE__).'includes/constants.php');
 		require_once(plugin_dir_path(__FILE__).'includes/UpdateClient.class.php');
 
 	}
