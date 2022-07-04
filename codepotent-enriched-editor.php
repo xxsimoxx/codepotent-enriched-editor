@@ -4,10 +4,10 @@
  * -----------------------------------------------------------------------------
  * Plugin Name: Enriched Editor
  * Description: Add rich formatting, tool, and controls to the ClassicPress editor.
- * Version: 1.1.0
- * Author: ClassicPress Contributors
- * Author URI: https://www.classicpress.net
- * Plugin URI: https://www.classicpress.net
+ * Version: 1.2.0
+ * Author: Simone Fioravanti
+ * Author URI: https://software.gieffeedizioni.it
+ * Plugin URI: https://software.gieffeedizioni.it
  * Text Domain: codepotent-enriched-editor
  * Domain Path: /languages
  * -----------------------------------------------------------------------------
@@ -19,6 +19,8 @@
  * A fork of TinyMCE Advanced, Copyright 2007+, Andrew Ozz. All rights reserved.
  * -----------------------------------------------------------------------------
  * Adopted by ClassicPress Contributors, 06/01/2021
+ * -----------------------------------------------------------------------------
+ * Forked by Simone Fioravanti, 04/10/2022
  * -----------------------------------------------------------------------------
  */
 
