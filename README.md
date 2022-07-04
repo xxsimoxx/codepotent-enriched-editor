@@ -1,4 +1,8 @@
+# Enriched Editor
+
 > The **Enriched Editor** plugin adds lots of additional options to the ClassicPress visual editor. This plugin is a fork of TinyMCE Advanced for WordPress and contains no Gutenberg code.
+
+![Enriched Editor](images/banner.svg)
 
 ### Pre-Installation
 If you already have _TinyMCE Advanced_ or _WYWIWYG Advanced_ installed, you will need to deactivate and delete before installing _Enriched Editor_. If you want to preserve your current editor settings, you can export them to a text file before deleting the current plugin. You can then import those settings back into Enriched Editor after you get it installed.
