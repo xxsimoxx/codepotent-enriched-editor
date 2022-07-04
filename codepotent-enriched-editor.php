@@ -237,9 +237,9 @@ class Enriched_Editor {
 		if ( ! class_exists( '_WP_Editors' ) ) {
 			require( ABSPATH . WPINC . '/class-wp-editor.php' );
 		}
-
+		// Here we don't sanitize JSON.
 		?>
-		<script>var tadvTranslation = <?php echo _WP_Editors::wp_mce_translation( '', true ); ?>;</script>
+		<script>var tadvTranslation = <?php echo _WP_Editors::wp_mce_translation( '', true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped?>;</script>
 		<?php
 	}
 
@@ -275,7 +275,7 @@ class Enriched_Editor {
 
 		// Force refresh after activation.
 		if ( ! empty( $GLOBALS['tinymce_version'] ) && strpos( $GLOBALS['tinymce_version'], '-tadv-' ) === false ) {
-			$GLOBALS['tinymce_version'] .= '-tadv-' . $this->plugin_version;
+			$GLOBALS['tinymce_version'] .= '-tadv-' . $this->plugin_version; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		}
 	}
 
@@ -293,16 +293,14 @@ class Enriched_Editor {
 			<div class="error notice is-dismissible"><p>
 			<?php
 
-			printf( __( 'Enriched Editor requires ClassicPress version %1$s or newer. It appears that you are running %2$s. This can make the editor unstable.', 'codepotent-enriched-editor' ),
-				$this->required_version,
+			printf( esc_html__( 'Enriched Editor requires ClassicPress version %1$s or newer. It appears that you are running %2$s. This can make the editor unstable.', 'codepotent-enriched-editor' ),
+				esc_html( $this->required_version ),
 				esc_html( $wp_ver )
 			);
 
 			echo '<br>';
 
-			printf( __( 'Please upgrade your ClassicPress installation or download an <a href="%s">older version of the plugin</a>.', 'codepotent-enriched-editor' ),
-				'https://codepotent.com/classicpress/plugins/'
-			);
+			esc_html_e('Please upgrade your ClassicPress installation.', 'codepotent-enriched-editor' );
 
 			?>
 			</p></div>
@@ -401,7 +399,7 @@ class Enriched_Editor {
 			'backcolor' => 'Background color',
 
 			// Layer plugin ?
-		//	'insertlayer' => 'Layer',
+			//	'insertlayer' => 'Layer',
 
 			// WP
 			'wp_adv'		=> 'Toolbar Toggle',
@@ -689,11 +687,11 @@ class Enriched_Editor {
 	}
 
 	private function parse_buttons( $toolbar_id = false, $buttons = false ) {
-		if ( $toolbar_id && ! $buttons && ! empty( $_POST[$toolbar_id] ) )
-			$buttons = $_POST[$toolbar_id];
+		if ( $toolbar_id && ! $buttons && ! empty( $_POST[$toolbar_id] ) ) // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$buttons = sanitize_key(wp_unslash($_POST[$toolbar_id])); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
 		if ( is_array( $buttons ) ) {
-			$_buttons = array_map( array( @$this, 'filter_name' ), $buttons );
+			$_buttons = array_map( array( @$this, 'filter_name' ), $buttons ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 			return implode( ',', array_filter( $_buttons ) );
 		}
 
@@ -748,6 +746,8 @@ class Enriched_Editor {
 	}
 
 	private function save_settings( $all_settings = null ) {
+		// This function is called in codepotent-enriched-editor-admin.php that checks nonces.
+		// Sanitization is done by $this->validate_settings().
 		$settings = $user_settings = array();
 
 		if ( empty( $this->buttons_filter ) ) {
@@ -763,8 +763,8 @@ class Enriched_Editor {
 
 			if ( ! empty( $user_settings[ $toolbar_name ] ) ) {
 				$toolbar = explode( ',', $user_settings[ $toolbar_name ] );
-			} elseif ( ! empty( $_POST[ $toolbar_name ] ) && is_array( $_POST[ $toolbar_name ] ) ) {
-				$toolbar = $_POST[ $toolbar_name ];
+			} elseif ( ! empty( $_POST[ $toolbar_name ] ) && is_array( $_POST[ $toolbar_name ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+				$toolbar = wp_unslash($_POST[ $toolbar_name ]); // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			} else {
 				$toolbar = array();
 			}
@@ -778,8 +778,8 @@ class Enriched_Editor {
 
 		if ( ! empty( $user_settings['options'] ) ) {
 			$options = explode( ',', $user_settings['options'] );
-		} elseif ( ! empty( $_POST['options'] ) && is_array( $_POST['options'] ) ) {
-			$options = $_POST['options'];
+		} elseif ( ! empty( $_POST['options'] ) && is_array( $_POST['options'] ) ) {  // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$options = wp_unslash($_POST['options']); // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		} else {
 			$options = array();
 		}
@@ -788,7 +788,7 @@ class Enriched_Editor {
 
 		if ( ! empty( $user_settings['plugins'] ) ) {
 			$plugins = explode( ',', $user_settings['plugins'] );
-		} elseif ( ! empty( $_POST['options']['menubar'] ) ) {
+		} elseif ( ! empty( $_POST['options']['menubar'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			$plugins = array( 'anchor', 'code', 'insertdatetime', 'nonbreaking', 'print', 'searchreplace', 'table', 'visualblocks', 'visualchars' );
 		} else {
 			$plugins = array();
@@ -813,6 +813,9 @@ class Enriched_Editor {
 	}
 
 	private function save_admin_settings( $all_settings = null ) {
+		// This function is called in codepotent-enriched-editor-admin.php that checks nonces.
+		// Sanitization is done by $this->validate_settings().
+
 		$admin_settings = $save_admin_settings = array();
 
 		if ( ! empty( $all_settings['admin_settings'] ) ) {
@@ -827,13 +830,13 @@ class Enriched_Editor {
 			}
 
 			$disabled_editors = array_intersect( $this->get_editor_locations(), explode( ',', $admin_settings['disabled_editors'] ) );
-		} elseif ( isset( $_POST['tadv-save'] ) ) {
-			if ( ! empty( $_POST['admin_options'] ) && is_array( $_POST['admin_options'] ) ) {
-				$save_admin_settings['options'] = $this->validate_settings( $_POST['admin_options'], $this->get_all_admin_options() );
+		} elseif ( isset( $_POST['tadv-save'] ) ) {  // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			if ( ! empty( $_POST['admin_options'] ) && is_array( $_POST['admin_options'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+				$save_admin_settings['options'] = $this->validate_settings( wp_unslash($_POST['admin_options']), $this->get_all_admin_options() ); // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			}
 
-			if ( ! empty( $_POST['tadv_enable_at'] ) && is_array( $_POST['tadv_enable_at'] ) ) {
-				$tadv_enable_at = $_POST['tadv_enable_at'];
+			if ( ! empty( $_POST['tadv_enable_at'] ) && is_array( $_POST['tadv_enable_at'] ) ) {  // phpcs:ignore WordPress.Security.NonceVerification.Missing
+				$tadv_enable_at = wp_unslash($_POST['tadv_enable_at']); // phpcs:ignore WordPress.Security.NonceVerification.Missing,WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			} else {
 				$tadv_enable_at = array();
 			}
