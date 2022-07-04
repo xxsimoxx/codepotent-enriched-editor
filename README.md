@@ -30,4 +30,4 @@ If you already have _TinyMCE Advanced_ or _WYWIWYG Advanced_ installed, you will
   Pull custom styles from an `editor-style.css` file and add them to a drop-down menu.
 
 
-![Screenshot](screenshot.png)
+![Screenshot](images/screenshot.png)
