@@ -4,8 +4,10 @@
  * -----------------------------------------------------------------------------
  * Plugin Name: Enriched Editor
  * Description: Add rich formatting, tool, and controls to the ClassicPress editor.
- * Version: 1.2.0
+ * Version: 1.2.1
  * Author: Simone Fioravanti
+ * Requires PHP: 5.6
+ * Requires CP: 1.0
  * Author URI: https://software.gieffeedizioni.it
  * Plugin URI: https://software.gieffeedizioni.it
  * Text Domain: codepotent-enriched-editor
