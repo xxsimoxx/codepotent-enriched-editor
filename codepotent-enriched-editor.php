@@ -4,7 +4,7 @@
  * -----------------------------------------------------------------------------
  * Plugin Name: Enriched Editor
  * Description: Add rich formatting, tool, and controls to the ClassicPress editor.
- * Version: 1.2.1
+ * Version: 1.2.2
  * Author: Simone Fioravanti
  * Requires PHP: 5.6
  * Requires CP: 1.0
