@@ -57,7 +57,7 @@ class Enriched_Editor {
 	private function get_default_user_settings() {
 		return array(
 			'options'	=> 'menubar,advlist',
-			'toolbar_1' => 'formatselect,bold,italic,blockquote,bullist,numlist,alignleft,aligncenter,alignright,link,unlink,undo,redo',
+			'toolbar_1' => 'formatselect,bold,italic,blockquote,bullist,numlist,alignleft,aligncenter,alignright,link,unlink,undo,redo,wp_adv',
 			'toolbar_2' => 'fontselect,fontsizeselect,outdent,indent,pastetext,removeformat,charmap,wp_more,forecolor,table,wp_help',
 			'toolbar_3' => '',
 			'toolbar_4' => '',
