@@ -120,7 +120,7 @@ class Enriched_Editor {
 		if ( ! defined( 'ABSPATH' ) ) {
 			return;
 		}
-
+/**
 		register_activation_hook( __FILE__, array( $this, 'check_plugin_version' ) );
 
 		add_action( 'plugins_loaded', array( $this, 'set_paths' ), 50 );
@@ -146,9 +146,77 @@ class Enriched_Editor {
 		add_action( 'after_wp_tiny_mce', array( $this, 'after_wp_tiny_mce' ) );
 
 		add_action('upgrader_process_complete', [$this, 'upgrade_completed'], 10, 2);
-
+*/
+		add_action('admin_enqueue_scripts', [$this, 'cm_scripts']);
+add_action('after_wp_tiny_mce', [$this, 'cm_after_tiny'], 999);
 		require_once(plugin_dir_path(__FILE__).'includes/UpdateClient.class.php');
 
+	}
+
+	public function cm_scripts($hook) {
+		if (!in_array($hook, ['post.php', 'post-new.php'])) {
+		//	return;
+		}
+
+		wp_register_script('codemirror', plugins_url('js/codemirror/lib/codemirror.js', __FILE__));
+		wp_register_script('codemirror_xml', plugins_url('js/codemirror/mode/xml/xml.js', __FILE__));
+		wp_register_script('codemirror_javascript', plugins_url('js/codemirror/mode/javascript/javascript.js', __FILE__));
+		wp_register_script('codemirror_css', plugins_url('js/codemirror/mode/css/css.js', __FILE__));
+		wp_register_script('codemirror_htmlmixed', plugins_url('js/codemirror/mode/htmlmixed/htmlmixed.js', __FILE__));
+		wp_register_style('codemirror', plugins_url('js/codemirror/lib/codemirror.css', __FILE__));
+		wp_register_style('codemirror_theme', plugins_url('js/codemirror/theme/default.css', __FILE__));
+		wp_enqueue_script('codemirror');
+		wp_enqueue_script('codemirror_xml');
+		wp_enqueue_script('codemirror_javascript');
+		wp_enqueue_script('codemirror_css');
+		wp_enqueue_script('codemirror_htmlmixed');
+		wp_enqueue_style('codemirror');
+		wp_enqueue_style('codemirror_theme');
+		//add_action('after_wp_tiny_mce', [$this, 'cm_after_tiny'], 999);
+	}
+
+	public function cm_after_tiny() {
+		?>
+		<script type="text/javascript">
+		var codeMirrorObj;
+		function showCodeMirror()
+		{
+			codeMirrorObj = CodeMirror.fromTextArea(document.getElementById('content'), {
+				mode: 'text/html',
+				tabMode: 'indent',
+				lineNumbers: true,
+				lineWrapping: true
+			});
+
+			jQuery('#ed_toolbar').hide();
+			jQuery('#quicktags').hide();
+		}
+
+		var _switchEditorsGo = switchEditors.go;
+		switchEditors.go = function(id, mode) {
+				console.log('Hello');
+
+			if ('tinymce' == mode && codeMirrorObj) {
+				codeMirrorObj.toTextArea();
+
+				jQuery('#ed_toolbar').show();
+				jQuery('#quicktags').show();
+			}
+
+			_switchEditorsGo.call(switchEditors, id, mode);
+
+			if ('html' == mode) {
+				showCodeMirror();
+			}
+		};
+
+		setTimeout(function() {
+			if (!tinyMCE.get('content')) {
+				showCodeMirror();
+			}
+		}, 100);
+		</script>
+		<?php
 	}
 
 	public function disable_for_editor( $settings, $editor_id ) {
