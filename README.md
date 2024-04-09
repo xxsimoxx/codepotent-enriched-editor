@@ -1,5 +1,5 @@
 # Enriched Editor
-
+[![ClassicPress Directory Coding Standard checks.](https://github.com/xxsimoxx/codepotent-enriched-editor/actions/workflows/cpcs.yml/badge.svg)](https://github.com/xxsimoxx/codepotent-enriched-editor/actions/workflows/cpcs.yml)
 > The **Enriched Editor** plugin adds lots of additional options to the ClassicPress visual editor. This plugin is a fork of TinyMCE Advanced for WordPress and contains no Gutenberg code.
 
 ![Enriched Editor](images/banner.svg)
