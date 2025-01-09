@@ -4,7 +4,7 @@
  * -----------------------------------------------------------------------------
  * Plugin Name: Enriched Editor
  * Description: Add rich formatting, tool, and controls to the ClassicPress editor.
- * Version: 1.2.4
+ * Version: 1.2.5
  * Author: Simone Fioravanti
  * Requires PHP: 5.6
  * Requires CP: 1.0
@@ -229,7 +229,11 @@ class Enriched_Editor {
 	public function enqueue_scripts( $page ) {
 		if ( 'settings_page_codepotent-enriched-editor' == $page ) {
 			$this->set_paths();
-			wp_enqueue_script( 'wysiwyg-js', WYSIWYG_URL . 'js/wysiwyg-scripts.js', array( 'jquery-ui-sortable' ), '4.0', true );
+			if ( version_compare( classicpress_version(), '2.3.0', '>=' ) ) {
+				wp_enqueue_script( 'wysiwyg-js', WYSIWYG_URL . 'js/wysiwyg-scripts-sjs.js', array( 'sortable-js' ), '4.1', true );
+			} else {
+				wp_enqueue_script( 'wysiwyg-js', WYSIWYG_URL . 'js/wysiwyg-scripts.js', array( 'jquery-ui-sortable' ), '4.0', true );
+			}
 			wp_enqueue_style( 'wysiwyg-mce-skin', includes_url( 'js/tinymce/skins/lightgray/skin.min.css' ), array(), '4.0' );
 			wp_enqueue_style( 'wysiwyg-css', WYSIWYG_URL . 'css/wysiwyg-styles.css', array( 'editor-buttons' ), '4.0' );
 
