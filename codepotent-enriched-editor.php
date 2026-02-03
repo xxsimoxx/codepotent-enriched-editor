@@ -229,50 +229,50 @@ class Enriched_Editor {
 	public function enqueue_scripts( $page ) {
 		if ( 'settings_page_codepotent-enriched-editor' == $page ) {
 			$this->set_paths();
-	/*
-	 * ClassicPress: jQuery UI Sortable is deprecated. Prefer SortableJS when available.
-	 * SortableJS is shipped in ClassicPress core at wp-includes/js/sortable.min.js (CP 2.x).
-	 */
-	$sortable_path = ABSPATH . WPINC . '/js/sortable.min.js';
+			/*
+			 * ClassicPress: jQuery UI Sortable is deprecated. Prefer SortableJS when available.
+			 * SortableJS is shipped in ClassicPress core at wp-includes/js/sortable.min.js (CP 2.x).
+			 */
+			$sortable_path = ABSPATH . WPINC . '/js/sortable.min.js';
 
-	if ( file_exists( $sortable_path ) ) {
+			if ( file_exists( $sortable_path ) ) {
 
-		// CP 2.2 may have the file but not the registered handle, so register it if needed.
-		if ( ! wp_script_is( 'sortable-js', 'registered' ) ) {
-			$sortable_ver = function_exists( 'classicpress_version' ) ? classicpress_version() : false;
-			wp_register_script(
-				'sortable-js',
-				includes_url( 'js/sortable.min.js' ),
-				array(),
-				$sortable_ver,
-				true
-			);
+				// CP 2.2 may have the file but not the registered handle, so register it if needed.
+				if ( ! wp_script_is( 'sortable-js', 'registered' ) ) {
+					$sortable_ver = function_exists( 'classicpress_version' ) ? classicpress_version() : false;
+					wp_register_script(
+						'sortable-js',
+						includes_url( 'js/sortable.min.js' ),
+						array(),
+						$sortable_ver,
+						true
+					);
+				}
+
+				// Use the plugin’s SortableJS-based admin UI script.
+				wp_enqueue_script(
+					'wysiwyg-js',
+					WYSIWYG_URL . 'js/wysiwyg-scripts-sjs.js',
+					array( 'sortable-js' ),
+					'4.1',
+					true
+				);
+
+				} else {
+					// Fallback for very old installs where SortableJS isn’t present.
+				wp_enqueue_script(
+					'wysiwyg-js',
+					WYSIWYG_URL . 'js/wysiwyg-scripts.js',
+					array( 'jquery-ui-sortable' ),
+					'4.0',
+					true
+				);
 		}
 
-		// Use the plugin’s SortableJS-based admin UI script.
-		wp_enqueue_script(
-			'wysiwyg-js',
-			WYSIWYG_URL . 'js/wysiwyg-scripts-sjs.js',
-			array( 'sortable-js' ),
-			'4.1',
-			true
-		);
+		wp_enqueue_style( 'wysiwyg-mce-skin', includes_url( 'js/tinymce/skins/lightgray/skin.min.css' ), array(), '4.0' );
+		wp_enqueue_style( 'wysiwyg-css', WYSIWYG_URL . 'css/wysiwyg-styles.css', array( 'editor-buttons' ), '4.0' );
 
-	} else {
-		// Fallback for very old installs where SortableJS isn’t present.
-		wp_enqueue_script(
-			'wysiwyg-js',
-			WYSIWYG_URL . 'js/wysiwyg-scripts.js',
-			array( 'jquery-ui-sortable' ),
-			'4.0',
-			true
-		);
-	}
-
-			wp_enqueue_style( 'wysiwyg-mce-skin', includes_url( 'js/tinymce/skins/lightgray/skin.min.css' ), array(), '4.0' );
-			wp_enqueue_style( 'wysiwyg-css', WYSIWYG_URL . 'css/wysiwyg-styles.css', array( 'editor-buttons' ), '4.0' );
-
-			add_action( 'admin_footer', array( $this, 'load_mce_translation' ) );
+		add_action( 'admin_footer', array( $this, 'load_mce_translation' ) );
 		}
 	}
 
